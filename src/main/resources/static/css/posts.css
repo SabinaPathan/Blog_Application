@@ -1,0 +1,23 @@
+
+.bg-violet {
+          background-color: #6f42c1;
+        }
+        .table-violet {
+          --bs-table-bg: #f8f9fa;
+          --bs-table-striped-bg: #f3f4f6;
+          --bs-table-hover-bg: #e0cffc;
+          --bs-table-border-color: #e3e6f0;
+        }
+        .btn-violet {
+          background-color: #6f42c1;
+          color: white;
+        }
+        .btn-outline-violet {
+          border-color: #6f42c1;
+          color: #6f42c1;
+        }
+        .btn-outline-violet:hover {
+          background-color: #6f42c1;
+          color: white;
+        }
+

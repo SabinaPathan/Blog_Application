@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="admin/Header :: header"></div>
+
+<body class="bg-light">
+<div th:replace="admin/Header :: navbar"></div>
+
+<div class="container my-5">
+    <div class="card shadow">
+        <div class="card-header bg-violet text-white p-3">
+            <h3 class="mb-0">List Blog Posts</h3>
+        </div>
+
+        <br>
+
+        <div class="card-body py-4">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">  <!-- Wider column -->
+                    <form th:action="@{/admin/posts/search}" class="d-flex">  <!-- Flex layout -->
+                        <input type="text"
+                               class="form-control form-control-lg"
+                               name="query"
+                               placeholder="Search posts by title or content..."
+                               required
+                               style="border-radius: 50px 0 0 50px;">  <!-- Rounded left side -->
+                        <button type="submit"
+                                class="btn btn-violet btn-lg"
+                                style="border-radius: 0 50px 50px 0;">  <!-- Rounded right side -->
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover table-violet align-middle">
+                    <thead class="bg-violet text-white">
+                    <tr>
+                        <th scope="col" width="5%">No</th>
+                        <th scope="col" width="25%">Post Title</th>
+                        <th scope="col" width="35%">Post Short Desc</th>
+                        <th scope="col" width="15%">Post Created On</th>
+                        <th scope="col" width="20%">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post, postStat : ${posts}">
+                        <td th:text="${postStat.index + 1}">#</td>
+                        <td th:text="${post.title}">Post Title</td>
+                        <td th:text="${post.shortDescription}">Post short Description</td>
+                        <td th:text="${#temporals.format(post.createdOn, 'dd MMMM yyyy')}">30 March 2025</td>
+                        <td class="text-nowrap">
+                            <div class="d-flex justify-content-start">
+                                <a th:href="@{/admin/posts/{postId}/edit(postId=${post.id})}" class="btn btn-outline-violet btn-sm me-1">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a th:href="@{/admin/posts/{postId}/delete(postId=${post.id})}" class="btn btn-outline-danger btn-sm me-1">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                                <a th:href="@{/admin/posts/view(url=${post.url})}" class="btn btn-outline-violet btn-sm">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav th:if="${totalPages > 1}" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/posts(page=${currentPage - 1})}">
+                            &laquo;
+                        </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                        class="page-item"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/admin/posts(page=${i})}"
+                           th:text="${i}"></a>
+                    </li>
+
+                    <!-- Next -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/posts(page=${currentPage + 1})}">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+<style>
+    .page-item.active .page-link {
+      background-color: #6a11cb;
+      border-color: #6a11cb;
+    }
+
+    .page-link {
+      color: #6a11cb;
+    }
+
+    .page-link:hover {
+      color: #4d0b8f;
+    }
+
+    .page-item.disabled .page-link {
+      color: #6c757d;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

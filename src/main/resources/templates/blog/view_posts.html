@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="blog/Header :: header"></div>
+<body class="bg-light">
+
+<div th:replace="blog/Header :: navbar"></div>
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Main Content - Posts List -->
+    <div class="col-lg-8">
+      <div class="card shadow">
+        <div class="card-header bg-violet text-white p-3">
+          <h3 class="mb-0"> Blog Posts</h3>
+        </div>
+        <div class="card-body">
+          <div class="post-list">
+            <!-- Post Entry -->
+            <div th:each="post : ${postResponse}" class="post-item mb-4 pb-4 border-bottom">
+              <h4 class="post-title">
+                <a th:href="@{/post/{postUrl}(postUrl=${post.url})}"  class="text-decoration-none" th:text="${post.title}"></a>
+              </h4>
+              <div class="post-meta text-muted mb-2">
+                <small><i class="far fa-calendar-alt me-1"></i> <span th:text="${#temporals.format(post.createdOn, 'MMMM dd, yyyy')}"></span></small>
+              </div>
+              <div class="post-description" th:text="${post.shortDescription}"></div>
+              <a th:href="@{/post/{postUrl}(postUrl=${post.url})}"  class="btn btn-sm btn-outline-violet mt-2">Read More</a>
+            </div>
+
+            <!-- If no posts -->
+            <div th:if="${postResponse.empty}" class="text-center py-5">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h5>No posts available</h5>
+              <p class="text-muted">Check back later for new content</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <nav th:if="${totalPages > 1}" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${currentPage - 1})}" tabindex="-1">Previous</a>
+              </li>
+
+              <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                  class="page-item"
+                  th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/(page=${i})}"
+                   th:text="${i}"
+                   th:classappend="${i == currentPage} ? 'bg-violet border-violet'"></a>
+              </li>
+
+              <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${currentPage + 1})}">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar - Search -->
+    <div class="col-lg-4">
+      <!-- Search Box -->
+      <div class="card shadow mb-4">
+        <div class="card-header bg-violet text-white p-3">
+          <h5 class="mb-0">Search Posts</h5>
+        </div>
+        <div class="card-body">
+          <form th:action="@{/page/search}" class="d-flex">  <!-- Flex layout -->
+            <input type="text"
+                   class="form-control form-control-lg"
+                   name="query"
+                   placeholder="Search posts..."
+                   required
+                   style="border-radius: 50px 0 0 50px;">  <!-- Rounded left side -->
+            <button type="submit"
+                    class="btn btn-violet btn-lg"
+                    style="border-radius: 0 50px 50px 0;">  <!-- Rounded right side -->
+              <i class="bi bi-search"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Recent Posts Widget -->
+      <div class="card shadow">
+        <div class="card-header bg-violet text-white p-3">
+          <h5 class="mb-0">Recent Posts</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <a th:each="post, iterStat : ${postResponse}"
+               th:if="${iterStat.index < 5}"
+               th:href="@{/post/{postUrl}(postUrl=${post.url})}"
+               class="list-group-item list-group-item-action flex-column align-items-start">
+              <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1" th:text="${post.title}"></h6>
+              </div>
+              <small class="text-muted" th:text="${#temporals.format(post.createdOn, 'MMM dd')}"></small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+<style>
+  :root {
+    --violet: #6f42c1;
+    --violet-light: #8a63d2;
+    --violet-dark: #59359c;
+  }
+
+  .bg-violet {
+    background-color: var(--violet) !important;
+  }
+
+  .btn-violet {
+    background-color: var(--violet);
+    color: white;
+    border-color: var(--violet);
+  }
+
+  .btn-violet:hover {
+    background-color: var(--violet-dark);
+    border-color: var(--violet-dark);
+    color: white;
+  }
+
+  .btn-outline-violet {
+    color: var(--violet);
+    border-color: var(--violet);
+  }
+
+  .btn-outline-violet:hover {
+    background-color: var(--violet);
+    color: white;
+  }
+
+  .table-violet thead th {
+    background-color: var(--violet);
+    color: white;
+  }
+
+  .post-item:last-child {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .post-title {
+    font-weight: 600;
+  }
+
+  .post-title a {
+    color: #333;
+    transition: color 0.3s ease;
+  }
+
+  .post-title a:hover {
+    color: var(--violet);
+  }
+
+  .card {
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .input-group .form-control:focus {
+    box-shadow: none;
+    border-color: var(--violet);
+  }
+
+  .page-item.active .page-link {
+    background-color: var(--violet);
+    border-color: var(--violet);
+  }
+
+  .page-link {
+    color: var(--violet);
+  }
+
+  .page-link:hover {
+    color: var(--violet-dark);
+  }
+
+
+</style>
+</body>
+</html>

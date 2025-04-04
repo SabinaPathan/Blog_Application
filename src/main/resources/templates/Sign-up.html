@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="blog/Header :: header"></div>
+
+<body>
+
+<div th:replace="blog/Header :: navbar"></div>
+
+<!-- Sign-Up Form -->
+<div class="container">
+  <div class="registration-container">
+    <div class="card">
+      <div class="card-header">
+        <div class="header-logo">
+          <i class="bi bi-person-plus"></i>R
+        </div>
+        Registration Form
+      </div>
+
+      <div th:if="${param.success}">
+            <div class="alert alert-success" role="alert">
+                <strong>Success!</strong> Your account has been created successfully.
+            </div>
+      </div>
+
+      <div class="card-body">
+        <form role="form" th:action="@{/register/save}" method="post" th:object="${user}">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div class="row g-3">
+            <!-- First Name -->
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="firstName" placeholder="First Name"
+                       th:field="*{firstName}" required>
+                <label for="firstName">First Name</label>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+                  First name is required
+                </div>
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="lastName" placeholder="Last Name"
+                       th:field="*{lastName}" required>
+                <label for="lastName">Last Name</label>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                  Last name is required
+                </div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="email" class="form-control" id="email" placeholder="name@example.com"
+                       th:field="*{email}" required th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                <label for="email">Email address</label>
+
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                  Valid email is required
+                </div>
+
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email') and #fields.errors('email').contains('email.duplicate')}">
+                  There is already an account registered with this email
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="password" class="form-control" id="password" placeholder="Password"
+                       th:field="*{password}" required minlength="8">
+                <label for="password">Password</label>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                  Password must be at least 8 characters
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="col-12">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="terms" required>
+                <label class="form-check-label" for="terms">I agree to the <a href="#" class="violet-text">Terms and Conditions</a></label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-violet">Register Now</button>
+            </div>
+
+            <div class="col-12">
+              <div class="divider">
+                <div class="divider-line"></div>
+                <div class="divider-text">or</div>
+                <div class="divider-line"></div>
+              </div>
+            </div>
+
+            <div class="col-12 text-center">
+              Already have an account? <a href="/login" class="violet-text">Login here</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+      --primary-color: #8A2BE2; /* Violet */
+      --light-violet: #D8BFD8;
+      --accent-color: #6A0DAD;
+  }
+
+  body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .registration-container {
+      max-width: 600px;
+      margin: 30px auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-weight: 600;
+      font-size: 24px;
+      border-bottom: none;
+  }
+
+  .card-body {
+      background-color: white;
+      padding: 30px;
+  }
+
+  .form-floating {
+      margin-bottom: 15px;
+  }
+
+  .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(138, 43, 226, 0.25);
+  }
+
+  .btn-violet {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      width: 100%;
+      padding: 12px;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin-top: 10px;
+  }
+
+  .btn-violet:hover, .btn-violet:focus {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+      color: white;
+  }
+
+  .header-logo {
+      width: 60px;
+      height: 60px;
+      background-color: white;
+      color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 30px;
+      font-weight: bold;
+  }
+
+  .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+  }
+
+  .violet-text {
+      color: var(--primary-color);
+      text-decoration: none;
+  }
+
+  .violet-text:hover {
+      text-decoration: underline;
+  }
+
+  .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+  }
+
+  .divider-line {
+      flex-grow: 1;
+      height: 1px;
+      background-color: #dee2e6;
+  }
+
+  .divider-text {
+      padding: 0 15px;
+      color: #6c757d;
+  }
+</style>
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
