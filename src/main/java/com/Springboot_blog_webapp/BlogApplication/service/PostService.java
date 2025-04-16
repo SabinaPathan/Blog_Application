@@ -9,7 +9,7 @@ public interface PostService {
 
     List<PostDto> findAllPosts();
 
-    void createPost(PostDto post);
+    void createPost(PostDto post, String username);
 
     PostDto findPostById(Long postId);
 

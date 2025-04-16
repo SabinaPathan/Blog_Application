@@ -1,12 +1,9 @@
 package com.Springboot_blog_webapp.BlogApplication.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,20 +13,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSpringSecurity {
 
-    private UserDetailsService userDetailsService;
-
-    public WebSpringSecurity(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -37,18 +23,18 @@ public class WebSpringSecurity {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                                .requestMatchers("/register", "/","/error").permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/admin/**"))
-                                .hasAnyRole("ADMIN","GUEST")
+                                .requestMatchers("/css/**", "/js/**", "/images/**", "/resources/**").permitAll()
+                                .requestMatchers("/", "/error").permitAll()
+                                .requestMatchers("/login", "/logout").permitAll()
+                                .requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "GUEST")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/admin/posts")
+                                .defaultSuccessUrl("/admin/posts", true)
                                 .permitAll()
                 )
                 .logout(logout ->
@@ -59,10 +45,9 @@ public class WebSpringSecurity {
                                 .clearAuthentication(true)
                                 .deleteCookies("JSESSIONID")
                                 .permitAll()
-                );
+                )
+                .csrf(csrf -> csrf.disable()); // Consider enabling CSRF for production
 
         return http.build();
     }
-
-
 }

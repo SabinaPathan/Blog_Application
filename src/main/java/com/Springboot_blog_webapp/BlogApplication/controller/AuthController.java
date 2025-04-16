@@ -3,6 +3,7 @@ package com.Springboot_blog_webapp.BlogApplication.controller;
 
 import com.Springboot_blog_webapp.BlogApplication.dto.RegistrationDto;
 import com.Springboot_blog_webapp.BlogApplication.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +53,8 @@ public class AuthController {
 
         userService.saveUser(user);
         return "redirect:/register?success";
+
+
     }
 
 

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -53,7 +54,7 @@ public class PostController {
 
     //create handler method for saving post
     @PostMapping("/admin/posts/save")
-    public String createPost(@Valid @ModelAttribute("post") PostDto post, BindingResult bindingResult, Model model) {
+    public String createPost(@Valid @ModelAttribute("post") PostDto post, BindingResult bindingResult, Model model, Principal principal) {
         // Debugging output
         System.out.println("Received post: " + post);
         System.out.println("Title: " + post.getTitle());
@@ -89,7 +90,7 @@ public class PostController {
             System.out.println("URL set to: " + post.getUrl());
 
             // Create the post
-            postService.createPost(post);
+            postService.createPost(post,principal.getName());
             System.out.println("Post created successfully");
             return "redirect:/admin/posts";
         } catch (Exception e) {

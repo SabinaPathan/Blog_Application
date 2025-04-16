@@ -38,8 +38,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void createPost(PostDto postDto) {
+    public void createPost(PostDto postDto, String username) {
+        User creator = userRepository.findByEmail(username);
+        if (creator == null) {
+            throw new UsernameNotFoundException("User not found with email: " + username);
+        }
+
         Post post = PostMapper.mapToPost(postDto);
+        post.setCreatedBy(creator);
         postRepository.save(post);
     }
 
